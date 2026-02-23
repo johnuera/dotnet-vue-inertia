@@ -1,4 +1,4 @@
-# MyInertiaVue (Dev mode - two terminals)
+# Dotnet - Vue - Inertia
 
 ## Terminal 1 (Vite dev server)
 ```bash
