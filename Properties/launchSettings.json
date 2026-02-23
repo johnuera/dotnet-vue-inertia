@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "MyInertiaVue_DevMode": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

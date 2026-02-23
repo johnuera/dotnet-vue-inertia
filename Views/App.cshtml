@@ -1,0 +1,65 @@
+@using InertiaCore
+@using System.Text.Json
+
+@{
+    var env = Context.RequestServices.GetRequiredService<IWebHostEnvironment>();
+    var isDev = env.IsDevelopment();
+
+    var viteDevServer = "http://localhost:5174";
+    var entry = "src/app.ts";
+
+    string? prodScript = null;
+    List<string> prodCss = new();
+
+    if (!isDev)
+    {
+        var manifestPath = System.IO.Path.Combine(env.WebRootPath, "manifest.json");
+        var manifestJson = System.IO.File.ReadAllText(manifestPath);
+        using var doc = JsonDocument.Parse(manifestJson);
+
+        var entryObj = doc.RootElement.GetProperty(entry);
+
+        prodScript = entryObj.GetProperty("file").GetString();
+
+        if (entryObj.TryGetProperty("css", out var cssArr) && cssArr.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var c in cssArr.EnumerateArray())
+                prodCss.Add(c.GetString()!);
+        }
+    }
+}
+
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title inertia>MyInertiaVue</title>
+
+  @* ✅ Production CSS *@
+  @if (!isDev)
+  {
+    foreach (var css in prodCss)
+    {
+      <link rel="stylesheet" href="@($"/{css}")" />
+    }
+  }
+</head>
+<body>
+  @await Inertia.Html(Model)
+
+  <script>
+    window.Ziggy = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewData["Ziggy"]));
+  </script>
+
+  @if (isDev)
+  {
+    <script type="module" src="@($"{viteDevServer}/@vite/client")"></script>
+    <script type="module" src="@($"{viteDevServer}/{entry}")"></script>
+  }
+  else
+  {
+    <script type="module" src="@($"/{prodScript}")"></script>
+  }
+</body>
+</html>
