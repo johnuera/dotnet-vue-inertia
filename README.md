@@ -1,4 +1,4 @@
-# Dotnet - Vue - Inertia
+# Dotnet - Vue - Inertia + Daisy UI
 
 ## Terminal 1 (Vite dev server)
 ```bash
