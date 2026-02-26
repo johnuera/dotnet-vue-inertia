@@ -1,5 +1,5 @@
 import { createApp, h } from "vue";
-import { createInertiaApp, Link } from "@inertiajs/vue3";
+import { createInertiaApp, Link,router  } from "@inertiajs/vue3";
 import { route } from "./js/ziggy";
 import "./assets/main.css";
 import { themeChange } from 'theme-change'
@@ -39,13 +39,12 @@ async function bootstrap() {
       vueApp.component("Link", Link);
       vueApp.use(i18n);
       vueApp.use(pinia);
-      vueApp.config.globalProperties.$route = route;
-
-      // ✅ Hydrate Pinia from the initial Inertia page props
-      const shared = props.initialPage.props as any;
-      useAppStore(pinia).hydrateFromInertia(shared);
-      useUserStore(pinia).setName(shared.user);
-
+      vueApp.config.globalProperties.$route = route; 
+      router.on('navigate', (event) => {
+        const page = event.detail.page
+        const shared = page.props
+        useAppStore(pinia).hydrateFromInertia(shared)
+      })
       vueApp.mount(el); 
       themeChange(false);
     },

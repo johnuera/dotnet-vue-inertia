@@ -1,7 +1,7 @@
 using InertiaCore;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MyInertiaVue_DevMode.Controllers
+namespace VueInertiaNet.Controllers
 {
     public class HomeController : Controller
     { 

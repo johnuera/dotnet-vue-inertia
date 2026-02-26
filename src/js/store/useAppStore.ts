@@ -24,5 +24,10 @@ export const useAppStore = defineStore("app", {
       this.locale = locale;
       localStorage.setItem("locale", locale);
     },
+
+     setTheme(theme: string) {
+      this.theme = theme;
+      localStorage.setItem("theme", theme);
+    },
   },
 });

@@ -6,6 +6,8 @@ const appStore = useAppStore()
 </script>
 
 <template>
+
+    
     <div class="app-shell">
         <div class="drawer lg:drawer-open">
             <input id="my-drawer-4" type="checkbox" class="drawer-toggle" />

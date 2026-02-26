@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Routing.Patterns;
 
-namespace MyInertiaVue_DevMode.Controllers;
+namespace VueInertiaNet.Controllers;
 
 [ApiController]
 public class ZiggyController : ControllerBase

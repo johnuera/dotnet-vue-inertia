@@ -2,7 +2,7 @@
 import { computed, watch, onMounted } from "vue"
 import { useI18n } from "vue-i18n"
 import { route } from "../../js/ziggy"
-import { useTheme } from "@/composable/useTheme"
+import { useTheme } from "@/composables/useTheme"
 import { Head } from "@inertiajs/vue3"
 import { useAppStore } from "@/js/store/useAppStore"
  
@@ -12,9 +12,9 @@ defineProps<{
   user: {
     name: string
   } }>()
+const { theme, setTheme } = useTheme({ defaultTheme: "corporate" })
 
 // Theme
-const { theme, setTheme } = useTheme({ defaultTheme: "corporate" })
 const themes = [
   { key: "corporate", label: "Light" },
   { key: "business", label: "Dark" },
@@ -36,6 +36,7 @@ const activeLang = computed(() => appStore.locale)
 
 function setLang(lang: string) {
   appStore.setLocale(lang)
+
 }  
 // Sync Pinia → vue-i18n
 watch(

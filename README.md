@@ -31,7 +31,7 @@ Change the `ASPNETCORE_ENVIRONMENT` value to `"Production"`:
 ```json
 {
   "profiles": {
-    "MyInertiaVue_DevMode": {
+    "VueInertiaNet": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "environmentVariables": {
@@ -46,7 +46,51 @@ Change the `ASPNETCORE_ENVIRONMENT` value to `"Production"`:
 
 ---
 
-## 🖥 Development
+# 🐳 Docker Setup (Recommended for Production)
+
+This project includes a multi-stage Docker build that:
+
+* Builds Vue (Vite) into `wwwroot`
+* Publishes ASP.NET Core
+* Runs the app in Production mode
+
+---
+
+## 🔨 Build Docker Image
+
+From the project root:
+
+```bash
+docker build -t vueinertianet .
+```
+
+---
+
+## ▶ Run Docker Container
+
+```bash
+docker run -p 5000:5000 --env-file .env vueinertianet
+```
+
+Then open:
+
+```
+http://localhost:5000
+```
+
+---
+
+## 🐳 Using Docker Compose (Optional)
+
+If you have `docker-compose.yml`:
+
+```bash
+docker compose up --build
+```
+
+---
+
+## 🖥 Development (Without Docker)
 
 You need **two terminals** running simultaneously.
 
@@ -78,7 +122,7 @@ http://localhost:5000
 
 ---
 
-## 🏗 Production Build
+## 🏗 Production Build (Manual)
 
 Build frontend assets first:
 
@@ -100,7 +144,7 @@ wwwroot/manifest.json
 ### Backend
 
 * **ASP.NET Core** – Web API & server-side framework
-* **.NET** – Application runtime
+* **.NET 8** – Application runtime
 
 ### Frontend
 
