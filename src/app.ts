@@ -4,6 +4,11 @@ import { route } from "./js/ziggy";
 import "./assets/main.css";
 import { themeChange } from 'theme-change'
 import { i18n    } from "./i18n"
+import AppWrapper from "./Layouts/AppWrapper.vue";
+import { createPinia } from "pinia";
+import { useAppStore } from "./js/store/useAppStore";
+import { useUserStore } from "./js/store/useUserStore";
+const app_name = import.meta.env.VITE_APP_NAME
 
 async function loadZiggy() {
   if (window.Ziggy) return;
@@ -14,23 +19,35 @@ async function loadZiggy() {
 
 async function bootstrap() {
   await loadZiggy();
- 
+
   createInertiaApp({
-    title: title=>`FJM | ${title}`,
+    title: (title) => `${app_name} | ${title}`,
     resolve: (name) => {
       const pages = import.meta.glob("./Pages/**/*.vue", { eager: true }) as any;
       return pages[`./Pages/${name}.vue`];
     },
     setup({ el, App, props, plugin }) {
-      const vueApp = createApp({ render: () => h(App, props) });
+      const pinia = createPinia();
+      const vueApp = createApp({
+        render: () =>
+          h(AppWrapper, null, {
+            default: () => h(App, props),
+          }),
+      });
+
       vueApp.use(plugin);
       vueApp.component("Link", Link);
+      vueApp.use(i18n);
+      vueApp.use(pinia);
       vueApp.config.globalProperties.$route = route;
-      vueApp.use(i18n)
 
-      vueApp.mount(el);
-      themeChange(false)
+      // ✅ Hydrate Pinia from the initial Inertia page props
+      const shared = props.initialPage.props as any;
+      useAppStore(pinia).hydrateFromInertia(shared);
+      useUserStore(pinia).setName(shared.user);
 
+      vueApp.mount(el); 
+      themeChange(false);
     },
   });
 }

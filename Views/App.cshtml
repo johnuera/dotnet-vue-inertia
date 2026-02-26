@@ -46,8 +46,8 @@
   }
 </head>
 <body>
-  @await Inertia.Html(Model)
-
+  
+  @await Inertia.Html(Model) 
   <script>
     window.Ziggy = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewData["Ziggy"]));
   </script>

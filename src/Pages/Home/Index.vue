@@ -1,11 +1,17 @@
 <script setup lang="ts">
-import { computed, onMounted } from "vue"
+import { computed, watch, onMounted } from "vue"
 import { useI18n } from "vue-i18n"
 import { route } from "../../js/ziggy"
 import { useTheme } from "@/composable/useTheme"
-import { Head } from "@inertiajs/vue3";
-
-defineProps<{ message: string,title:string }>()
+import { Head } from "@inertiajs/vue3"
+import { useAppStore } from "@/js/store/useAppStore"
+ 
+defineProps<{ 
+  message: string; 
+  title: string; 
+  user: {
+    name: string
+  } }>()
 
 // Theme
 const { theme, setTheme } = useTheme({ defaultTheme: "corporate" })
@@ -15,35 +21,46 @@ const themes = [
   { key: "wireframe", label: "Wireframe" },
 ] as const
 
-// i18n language
+// App Store
+const appStore = useAppStore()
+
+// i18n
 const { locale } = useI18n()
+
 const languages = [
   { key: "en", label: "EN" },
   { key: "de", label: "DE" },
 ] as const
 
-const activeLang = computed(() => locale.value)
+const activeLang = computed(() => appStore.locale)
 
-function setLang(lang: (typeof languages)[number]["key"]) {
-  locale.value = lang
-  localStorage.setItem("lang", lang)
-}
+function setLang(lang: string) {
+  appStore.setLocale(lang)
+}  
+// Sync Pinia → vue-i18n
+watch(
+  () => appStore.locale,
+  (newLocale) => {
+    locale.value = newLocale
+  },
+  { immediate: true }
+)
 
+// Ensure i18n is initialized correctly on mount
 onMounted(() => {
-  const saved = localStorage.getItem("lang")
-  if (saved === "en" || saved === "de") {
-    locale.value = saved
-  }
+  locale.value = appStore.locale
 })
 </script>
 
 <template>
- <Head>
-    <title>{{title}}</title>
-    <meta name="description" content="Your page description">
-</Head>
+  <Head>
+    <title>{{ title }}</title>
+    <meta name="description" content="Your page description" />
+  </Head>
+
   <main class="p-6">
-    <h1 class="text-xl font-semibold">{{ message }}</h1>
+    <h1 class="text-xl font-semibold">{{ $t("welcome") }} - {{ user.name }}</h1>
+    <h1 class="text-xl font-semibold">{{message}}</h1>
 
     <section class="mt-6 space-y-6">
       <div class="opacity-70">Current theme: {{ theme }}</div>
@@ -60,7 +77,7 @@ onMounted(() => {
         </button>
       </div>
 
-      <div class="text-lg font-semibold">{{ $t("welcome") }}</div>
+      <div class="text-lg font-semibold"></div>
 
       <div class="flex gap-2">
         <button
@@ -76,7 +93,7 @@ onMounted(() => {
 
       <div>
         <Link :href="route('users.show', { id: 1 })" class="btn btn-primary">
-         {{ $t("page1") }}
+          {{ $t("page1") }}
         </Link>
       </div>
     </section>
